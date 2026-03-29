@@ -11,7 +11,6 @@ title: SEEM — Structured Episodic Event Memory
   <a href="https://arxiv.org/abs/2601.06411"><img src="https://img.shields.io/badge/arXiv-2601.06411-b31b1b?style=flat&labelColor=555" alt="arXiv"></a>
   <a href="https://github.com"><img src="https://img.shields.io/badge/github-SEEM-181717?style=flat&labelColor=555&logo=github&logoColor=white" alt="GitHub"></a>
   <a href="#"><img src="https://img.shields.io/badge/license-MIT-2EA44F?style=flat&labelColor=555" alt="License"></a>
-  <a href="#"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat&labelColor=555" alt="PRs Welcome"></a>
 </p>
 
 ---
@@ -30,14 +29,14 @@ Current LLM memory relies on static retrieval. SEEM introduces a structured alte
 
 ## Key Advantages
 
-| Advantage | Why It Matters |
-|-----------|----------------|
-| **Cognitive-Inspired Design** | Frame theory underpins the structure, mirroring human memory organization instead of flat storage |
-| **Dual-Layer Architecture** | Facts reside in graph memory while narratives flow through episodic memory, each layer purpose-built |
-| **Provenance-Aware** | Source pointers attach to every memory, so you always know where information originated |
-| **Automatic Consolidation** | Related events self-merge into coherent summaries without manual intervention |
-| **Native Graph Retrieval** | Relationships become navigable paths — ask "who else was there?" or "what happened before?" |
-| **Adjustable Recall Depth** | Choose lite summaries for speed or full context with source text when precision matters |
+| Advantage | Description |
+|-----------|-------------|
+| **Cognitive-Inspired Design** | Memory structure grounded in frame theory, reflecting human memory organization with hierarchical episodic and graph-based representations. |
+| **Dual-Layer Architecture** | Relational facts reside in a graph layer while narratives progress through dynamic episodic memory, each with dedicated retrieval mechanisms. |
+| **Provenance-Aware** | Every memory carries source pointers, enabling precise tracking of where information originated. |
+| **Automatic Consolidation** | Related events merge into coherent summaries through an LLM-judged integration pipeline without manual intervention. |
+| **Native Graph Retrieval** | Personalized PageRank traverses the knowledge graph along entity relationships to surface contextually relevant memories. |
+| **Adjustable Recall Depth** | Three recall modes (Lite, Pro, Max) control context granularity, from concise fact-based summaries to full source text with backfill. |
 
 ---
 
@@ -51,6 +50,8 @@ pip install -r requirements.txt
 
 ### 2. Configure
 
+Set environment variables for API access:
+
 ```bash
 export LLM_API_KEY="sk-xxx"
 export LLM_BASE_URL="https://api.deepseek.com"
@@ -60,6 +61,17 @@ export MM_ENCODER_API_KEY="sk-xxx"
 export MM_ENCODER_BASE_URL="https://api.siliconflow.cn/v1"
 export MM_ENCODER_MODEL="Qwen/Qwen3-Embedding-8B"
 ```
+
+Alternatively, edit `config.py` to change default settings such as retrieval strategy, embedding model, and integration parameters. Environment variables take priority over `config.py` values.
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `retrieve_strategy` | `ppr` | Retrieval strategy: `dpr` / `hybrid_rrf` / `ppr` |
+| `top_k_chunks` | 3 | Number of results to retrieve |
+| `top_k_facts` | 5 | Number of facts to retrieve |
+| `enable_integration` | `True` | Automatically merge related memories |
+| `integration_window` | 3 | How often to check for merges |
+| `enable_fact_graph` | `True` | Build knowledge graph |
 
 ### 3. Use
 
@@ -98,12 +110,6 @@ result = skill.recall({"text": "What did Lena ask?"}, top_k=3)
 
 ---
 
-## Retrieval
-
-SEEM defaults to **graph-based retrieval (PPR)** — following relationship paths through the knowledge graph to surface contextually relevant information.
-
----
-
 ## CLI Reference
 
 ```bash
@@ -127,19 +133,17 @@ cli_memory.py view                   # compact view
 cli_memory.py stats
 cli_memory.py clear --yes
 ```
-
 ---
 
-## Configuration
+## OpenClaw Skill
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `retrieve_strategy` | `ppr` | Retrieval strategy: `dpr` / `hybrid_rrf` / `ppr` |
-| `top_k_chunks` | 3 | Number of results to retrieve |
-| `top_k_facts` | 5 | Number of facts to retrieve |
-| `enable_integration` | `True` | Automatically merge related memories |
-| `integration_window` | 3 | How often to check for merges |
-| `enable_fact_graph` | `True` | Build knowledge graph |
+SEEM is packaged as an [OpenClaw](https://docs.openclaw.ai) agent skill. To install:
+
+1. Copy the `SEEM/` directory into your workspace's `skills/` folder.
+2. Set the required environment variables (`LLM_API_KEY`, `MM_ENCODER_API_KEY`) in your OpenClaw config or shell profile.
+3. The agent will automatically discover the skill and use it for structured memory operations.
+
+No additional configuration is needed. The agent reads `SKILL.md` to understand when and how to invoke store, recall, and display commands.
 
 ---
 
@@ -153,4 +157,3 @@ cli_memory.py clear --yes
   year    = {2026}
 }
 ```
-
