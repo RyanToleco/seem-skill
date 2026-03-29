@@ -5,7 +5,7 @@ title: SEEM — Structured Episodic Event Memory
 
 # 🧠 SEEM
 
-**Structured Episodic Event Memory** for LLM agents. Built on cognitive frame theory, SEEM organizes memory hierarchically rather than as flat key-value pairs.
+**Structured Episodic Event Memory** for LLM agents. Built on cognitive frame theory, SEEM organizes memory hierarchically.
 
 <p align="center">
   <a href="https://arxiv.org/abs/2601.06411"><img src="https://img.shields.io/badge/arXiv-2601.06411-b31b1b?style=flat&labelColor=555" alt="arXiv"></a>
