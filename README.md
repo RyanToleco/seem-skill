@@ -2,6 +2,18 @@
 
 **Structured Episodic Event Memory** for LLM agents. Built on cognitive frame theory, SEEM organizes memory hierarchically.
 
+<p align="center">
+  <img src="docs/figs/Memory_Layer.png" width="90%" alt="SEEM Memory Architecture">
+  <br>
+  <em>Overview of the SEEM hierarchical memory architecture.</em>
+</p>
+
+<p align="center">
+  <img src="docs/figs/Memory_Fusion.png" width="85%" alt="Memory Fusion Process">
+  <br>
+  <em>Overview of the associative consolidation and fusion.</em>
+</p>
+
 [arXiv:2601.06411](https://arxiv.org/abs/2601.06411) | MIT License
 
 ## Key Advantages

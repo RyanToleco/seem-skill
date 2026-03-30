@@ -8,6 +8,18 @@ title: SEEM — Structured Episodic Event Memory
 **Structured Episodic Event Memory** for LLM agents. Built on cognitive frame theory, SEEM organizes memory hierarchically.
 
 <p align="center">
+  <img src="figs/Memory_Layer.png" width="90%" alt="SEEM Memory Architecture">
+  <br>
+  <em>Overview of the SEEM hierarchical memory architecture.</em>
+</p>
+
+<p align="center">
+  <img src="figs/Memory_Fusion.png" width="85%" alt="Memory Fusion Process">
+  <br>
+  <em>Overview of the associative consolidation and fusion.</em>
+</p>
+
+<p align="center">
   <a href="https://arxiv.org/abs/2601.06411"><img src="https://img.shields.io/badge/arXiv-2601.06411-b31b1b?style=flat&labelColor=555" alt="arXiv"></a>
   <a href="https://github.com"><img src="https://img.shields.io/badge/github-SEEM-181717?style=flat&labelColor=555&logo=github&logoColor=white" alt="GitHub"></a>
   <a href="#"><img src="https://img.shields.io/badge/license-MIT-2EA44F?style=flat&labelColor=555" alt="License"></a>
@@ -17,13 +29,13 @@ title: SEEM — Structured Episodic Event Memory
 
 ## Paper Highlights
 
-Current LLM memory relies on static retrieval. SEEM introduces a structured alternative:
+Conventional LLM memory systems predominantly rely on static retrieval. SEEM introduces a structured alternative:
 
 - **Beyond Static RAG** — instead of passive document retrieval, SEEM builds cognitive-inspired memory structures
 - **Hierarchical Architecture** — relational facts live in a graph layer while narratives progress through dynamic episodic memory
-- **Episodic Event Frames (EEFs)** — conversation streams become structured frames with precise provenance tracking
-- **Reverse Provenance Expansion (RPE)** — fragmented evidence gets reconstructed into coherent narrative context
-- **Agentic Associative Fusion** — cross-layer linking connects related information dynamically
+- **Episodic Event Frames (EEFs)** — conversation streams become structured frames with provenance tracking
+- **Reverse Provenance Expansion (RPE)** — backfill mechanism reconstructs fragmented evidence into coherent narrative context
+- **Associative Fusion** — cross-layer linking connects related information dynamically
 
 ---
 
@@ -33,9 +45,9 @@ Current LLM memory relies on static retrieval. SEEM introduces a structured alte
 |-----------|-------------|
 | **Cognitive-Inspired Design** | Memory structure grounded in frame theory, reflecting human memory organization with hierarchical episodic and graph-based representations. |
 | **Dual-Layer Architecture** | Relational facts reside in a graph layer while narratives progress through dynamic episodic memory, each with dedicated retrieval mechanisms. |
-| **Provenance-Aware** | Every memory carries source pointers, enabling precise tracking of where information originated. |
+| **Provenance-Aware** | Every memory carries source pointers, enabling tracking of where information originated. |
 | **Automatic Consolidation** | Related events merge into coherent summaries through an LLM-judged integration pipeline without manual intervention. |
-| **Native Graph Retrieval** | Personalized PageRank traverses the knowledge graph along entity relationships to surface contextually relevant memories. |
+| **Graph-Aware Retrieval** | Personalized PageRank traverses the knowledge graph along entity relationships to surface contextually relevant memories. |
 | **Adjustable Recall Depth** | Three recall modes (Lite, Pro, Max) control context granularity, from concise fact-based summaries to full source text with backfill. |
 
 ---
