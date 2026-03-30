@@ -25,7 +25,19 @@ title: SEEM — Structured Episodic Event Memory
   <a href="#"><img src="https://img.shields.io/badge/license-MIT-2EA44F?style=flat&labelColor=555" alt="License"></a>
 </p>
 
----
+## Why SEEM? Redefining Long-Term AI Memory
+
+Most AI agents "forget" or lose context during long conversations because they rely on fragmented, flat memory systems. SEEM (Structured Episodic Event Memory) changes the game by giving LLMs a human-like, dual-layer memory. Instead of just searching for random text snippets, SEEM organizes information into a Graph Memory Layer for rock-solid facts and an Episodic Memory Layer to track the "story" of the interaction. This ensures your agent remains logically consistent and contextually aware, no matter how long the session lasts.
+
+SEEM consistently outperforms strong baselines across long-term dialogue understanding, complex reasoning, and logical consistency tasks.
+
+| Benchmark | Metric | SEEM | A-MEM | NV-Embed-v2 |
+|-----------|--------|:-----------:|:-----:|:-----------:|
+| LongMemEval | Accuracy (%) | **65.0** | 55.2 | 58.4 |
+| LoCoMo | F1 Score | **61.1** | 44.6 | 57.9 |
+| LoCoMo | LLM-Judge (J) | **78.0** | 61.9 | 74.7 |
+
+The secret to SEEM’s performance lies in its ability to reconstruct the "big picture." While other frameworks struggle with scattered evidence, our Reverse Provenance Expansion (RPE) mechanism allows the agent to pull in the full narrative context from just a single clue.
 
 ## Memory Representation Showcase
 
@@ -58,33 +70,6 @@ Events are further decomposed into **relational facts** — triples that connect
   <br>
   <em>Relational facts extracted from events, forming a cross-memory knowledge graph.</em>
 </p>
-
----
-
-## Paper Highlights
-
-Conventional LLM memory systems predominantly rely on static retrieval. SEEM introduces a structured alternative:
-
-- **Beyond Static RAG** — instead of passive document retrieval, SEEM builds cognitive-inspired memory structures
-- **Hierarchical Architecture** — relational facts live in a graph layer while narratives progress through dynamic episodic memory
-- **Episodic Event Frames (EEFs)** — conversation streams become structured frames with provenance tracking
-- **Reverse Provenance Expansion (RPE)** — backfill mechanism reconstructs fragmented evidence into coherent narrative context
-- **Associative Fusion** — cross-layer linking connects related information dynamically
-
----
-
-## Key Advantages
-
-| Advantage | Description |
-|-----------|-------------|
-| **Cognitive-Inspired Design** | Memory structure grounded in frame theory, reflecting human memory organization with hierarchical episodic and graph-based representations. |
-| **Dual-Layer Architecture** | Relational facts reside in a graph layer while narratives progress through dynamic episodic memory, each with dedicated retrieval mechanisms. |
-| **Provenance-Aware** | Every memory carries source pointers, enabling tracking of where information originated. |
-| **Automatic Consolidation** | Related events merge into coherent summaries through an LLM-judged integration pipeline without manual intervention. |
-| **Graph-Aware Retrieval** | Personalized PageRank traverses the knowledge graph along entity relationships to surface contextually relevant memories. |
-| **Adjustable Recall Depth** | Three recall modes (Lite, Pro, Max) control context granularity, from concise fact-based summaries to full source text with backfill. |
-
----
 
 ## Quick Start
 
@@ -138,8 +123,6 @@ python scripts/cli_memory.py display
 python scripts/cli_memory.py stats
 ```
 
----
-
 ## Python API
 
 ```python
@@ -153,8 +136,6 @@ mid = skill.store({"text": "Lena asked about dogs", "speaker": "Alice"})
 # Recall
 result = skill.recall({"text": "What did Lena ask?"}, top_k=3)
 ```
-
----
 
 ## CLI Reference
 
@@ -179,7 +160,6 @@ cli_memory.py view                   # compact view
 cli_memory.py stats
 cli_memory.py clear --yes
 ```
----
 
 ## OpenClaw Skill
 
@@ -190,8 +170,6 @@ SEEM is packaged as an [OpenClaw](https://docs.openclaw.ai) agent skill. To inst
 3. The agent will automatically discover the skill and use it for structured memory operations.
 
 No additional configuration is needed. The agent reads `SKILL.md` to understand when and how to invoke store, recall, and display commands.
-
----
 
 ## Citation
 
