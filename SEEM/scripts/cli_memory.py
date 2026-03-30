@@ -136,6 +136,59 @@ def build_skill(config: SEEMConfig) -> SEEMSkill:
     return SEEMSkill(config)
 
 
+def _try_cli_integration(skill: SEEMSkill, new_memory_id: str, config: SEEMConfig):
+    """CLI one-shot integration: judge new memory against existing candidates.
+    
+    Since CLI creates a fresh SEEMSkill per invocation, the pending buffer is
+    always empty.  This function manually runs the batch judge with the
+    newly-stored memory as the sole pending item, using dense retrieval to
+    find candidate memories for potential merging.
+    """
+    if new_memory_id not in skill.memories:
+        return
+    new_memory = skill.memories[new_memory_id]
+    new_embedding = skill.memory_embeddings.get(new_memory_id)
+    if new_embedding is None:
+        return
+    
+    # Retrieve candidates via dense similarity
+    candidate_ids = skill._dense_retrieve(new_embedding, top_k=config.top_k_candidates)
+    candidate_ids = [cid for cid in candidate_ids if cid != new_memory_id and cid in skill.memories]
+    if not candidate_ids:
+        return
+    
+    # Build pending list and candidate map for batch judge
+    pending = [(new_memory_id, new_memory)]
+    candidate_map = {new_memory_id: candidate_ids}
+    
+    merge_groups = skill._batch_judge(pending, candidate_map)
+    
+    for group in merge_groups:
+        members = group.get("members", [])
+        if len(members) < 2:
+            continue
+        chunk_check = group.get("chunk_count_check", {})
+        if chunk_check.get("exceeds_limit", False):
+            continue
+        coherence = group.get("coherence_level", "WEAK")
+        if coherence not in ("STRONG", "MODERATE"):
+            continue
+        integrated_summary = group.get("integrated_summary", "")
+        integrated_events = group.get("integrated_events", [])
+        if not integrated_summary or not integrated_events:
+            continue
+        
+        skill._merge_group(
+            member_ids=members,
+            integrated_summary=integrated_summary,
+            integrated_events=integrated_events,
+        )
+        skill.stats["integration_count"] += 1
+        skill.save_to_disk()
+        print(f"  ✓ Integrated with: {[m[:8] for m in members if m != new_memory_id]}")
+        return  # Only one merge per CLI invocation
+
+
 # ==================== Store Commands ====================
 
 def cmd_store(args):
@@ -168,6 +221,16 @@ def cmd_store(args):
     # Store
     try:
         memory_id = skill.store(observation)
+        
+        # CLI runs as one-shot process — pending state is lost between calls.
+        # Force immediate integration by manually triggering the batch judge
+        # with the just-stored memory against all existing memories.
+        if config.enable_integration and len(skill.memories) > 1:
+            try:
+                _try_cli_integration(skill, memory_id, config)
+            except Exception as ie:
+                print(f"  [integration skipped: {ie}]")
+        
         print(f"✓ Stored memory: {memory_id}")
         print(f"  Dialogue ID: {observation.get('dialogue_id', 'auto-generated')}")
         if observation.get("speaker"):

@@ -45,10 +45,10 @@ CRITICAL CONSTRAINTS:
 2. CHUNK LIMIT: Total chunks after integration ≤10. Reject if exceeded.
 3. SLOT INTEGRITY: Keep participants/action/time/location/reason/method separate.
 
-Integration Criteria (RELAXED):
-- STRONG coherence: Same entity/topic with clear temporal or causal link (including evolving stances, status changes, follow-ups) → INTEGRATE
-- MODERATE coherence: Same topic/theme, related context → INTEGRATE
-- WEAK coherence: Only vague topic similarity → REJECT
+Integration Criteria:
+- STRONG coherence: Same primary entity/topic with clear temporal or causal link (e.g. follow-ups, status changes, evolving narrative about the same event) → INTEGRATE
+- MODERATE coherence: Same primary entity and closely related subtopic (e.g. same company's different product announcements within the same domain) → INTEGRATE
+- WEAK coherence: Only share a secondary entity or vague thematic similarity → REJECT
 
 Decision Process:
 1. Check chunk constraint first → Reject if >10
@@ -184,10 +184,10 @@ CRITICAL CONSTRAINTS:
 2. CHUNK LIMIT: Total chunks after any merge ≤10. Reject a merge group if exceeded.
 3. SLOT INTEGRITY: Keep participants/action/time/location/reason/method separate.
 
-Integration Criteria (RELAXED):
-- STRONG coherence: Same entity/topic with clear temporal or causal link → INTEGRATE
-- MODERATE coherence: Same topic/theme, related context → INTEGRATE
-- WEAK coherence: Only vague topic similarity → DO NOT MERGE
+Integration Criteria:
+- STRONG coherence: Same primary entity/topic with clear temporal or causal link → INTEGRATE
+- MODERATE coherence: Same primary entity and closely related subtopic (e.g. same company's different product announcements within the same domain) → INTEGRATE
+- WEAK coherence: Only share a secondary entity or vague thematic similarity → DO NOT MERGE
 
 You will receive:
 1. PENDING MEMORIES: The w new memories that triggered this batch (each has a pending_id like "p1", "p2", ...).
