@@ -27,7 +27,7 @@ title: SEEM — Structured Episodic Event Memory
 
 ## Why SEEM? Redefining Long-Term AI Memory
 
-Most AI agents "forget" or lose context during long conversations because they rely on fragmented, flat memory systems. SEEM (Structured Episodic Event Memory) changes the game by giving LLMs a human-like, dual-layer memory. Instead of just searching for random text snippets, SEEM organizes information into a Graph Memory Layer for rock-solid facts and an Episodic Memory Layer to track the "story" of the interaction. This ensures your agent remains logically consistent and contextually aware, no matter how long the session lasts.
+Most AI agents "forget" or lose context during long conversations because they rely on fragmented, flat memory systems. **SEEM (Structured Episodic Event Memory)** changes the game by giving LLMs a human-like, dual-layer memory. Instead of just searching for random text snippets, SEEM organizes information into a Graph Memory Layer for rock-solid facts and an Episodic Memory Layer to track the "story" of the interaction. This ensures your agent remains logically consistent and contextually aware, no matter how long the session lasts.
 
 SEEM consistently outperforms strong baselines across long-term dialogue understanding, complex reasoning, and logical consistency tasks.
 
@@ -63,12 +63,12 @@ Within each memory, individual **events** are extracted with six dedicated slots
 
 ### Semantic Facts
 
-Events are further decomposed into **relational facts** — triples that connect entities through predicates. These facts form a knowledge graph linking entities across memories, enabling graph-aware retrieval over relational structures.
+Passages are also parsed for **relational facts** — triples that connect entities through predicates. These facts form a knowledge graph linking entities across memories, enabling graph-aware retrieval over relational structures.
 
 <p align="center">
   <img src="figs/Semantic_Facts.png" width="85%" alt="Semantic Facts Example">
   <br>
-  <em>Relational facts extracted from events, forming a cross-memory knowledge graph.</em>
+  <em>Relational facts extracted from passages, forming a cross-memory knowledge graph.</em>
 </p>
 
 ## Quick Start
