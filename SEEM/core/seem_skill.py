@@ -15,7 +15,6 @@ from .schema import (
 )
 from .prompts import (
     EPISODIC_EXTRACTION_SYSTEM_PROMPT,
-    JUDGE_INTEGRATE_SYSTEM_PROMPT,
     QUERY_5W1H_SYSTEM_PROMPT,
     FACT_EXTRACTION_SYSTEM_PROMPT,
     format_5w1h_text
@@ -537,109 +536,7 @@ class SEEMSkill:
     # Constraint constants
     MAX_CHUNKS_PER_MEMORY = 10  # Maximum chunks per memory
     MAX_ACTIONS_PER_EVENT = 5   # Maximum actions per event
-    
-    def _integrate_memory(self, new_memory: EpisodicMemory, new_embedding: np.ndarray, 
-                         observation: Dict[str, Any]) -> str:
-        """
-        Dynamic integration: Retrieve candidates -> LLM decision -> Merge
-        
-        Returns:
-            memory_id
-        """
-        # 1. Dense retrieve Top-K candidates
-        candidate_ids = self._dense_retrieve(new_embedding, top_k=self.config.top_k_candidates)
-        
-        if not candidate_ids:
-            return self._add_memory(new_memory, new_embedding)
-        
-        # 2. Prepare candidate data
-        candidates = [self.memories[mid] for mid in candidate_ids]
-        candidate_chunks = [self.chunk_store[mem.chunk_ids[0]] for mem in candidates]
-        
-        # 3. Pre-check: Filter candidates that would exceed chunk limit
-        valid_candidates = []
-        for mem in candidates:
-            total_chunks = len(new_memory.chunk_ids) + len(mem.chunk_ids)
-            if total_chunks <= self.MAX_CHUNKS_PER_MEMORY:
-                valid_candidates.append(mem)
-        
-        # If no valid candidates after chunk check, skip integration
-        if not valid_candidates:
-            return self._add_memory(new_memory, new_embedding)
-        
-        # Update candidate_chunks to match valid_candidates
-        candidate_chunks = [self.chunk_store[mem.chunk_ids[0]] for mem in valid_candidates]
-        
-        # 4. LLM Judge & Integrate
-        result = self._judge_and_integrate(
-            new_memory=new_memory,
-            candidates=valid_candidates,
-            candidate_chunks=candidate_chunks
-        )
-        
-        if result and result.get("integrated_with_ids"):
-            # LLM returns exact memory_id strings to integrate with
-            requested_ids = result["integrated_with_ids"]
-            
-            # Safety: ensure it's a list
-            if not isinstance(requested_ids, list):
-                print(f"Warning: integrated_with_ids is not a list: {type(requested_ids)}, skipping integration")
-                return self._add_memory(new_memory, new_embedding)
-            
-            # Validate: only accept IDs that actually exist in current memories
-            candidate_id_set = {mem.memory_id for mem in candidates}
-            integrated_ids = []
-            seen = set()
-            for mid in requested_ids:
-                if mid in candidate_id_set and mid not in seen:
-                    integrated_ids.append(mid)
-                    seen.add(mid)
-                elif mid not in candidate_id_set:
-                    print(f"Warning: LLM returned unknown memory_id '{mid}', skipping")
-            
-            if not integrated_ids:
-                print("No valid memory_ids from LLM, adding as new memory")
-                return self._add_memory(new_memory, new_embedding)
-            
-            # Calculate actual total chunks
-            total_chunks = len(new_memory.chunk_ids)
-            for mid in integrated_ids:
-                if mid in self.memories:
-                    total_chunks += len(self.memories[mid].chunk_ids)
-            
-            # Hard check: Reject if chunk limit exceeded
-            if total_chunks > self.MAX_CHUNKS_PER_MEMORY:
-                print(f"Warning: Integration rejected - chunk count {total_chunks} exceeds limit {self.MAX_CHUNKS_PER_MEMORY}")
-                return self._add_memory(new_memory, new_embedding)
-            
-            integrated_summary = result["integrated_summary"]
-            integrated_events = result["integrated_events"]
-            
-            # 6. Validate and fix action count per event
-            integrated_events = self._validate_events(integrated_events)
-            
-            merged_memory = self._merge_memories(
-                new_memory=new_memory,
-                integrated_ids=integrated_ids,
-                integrated_summary=integrated_summary,
-                integrated_events=integrated_events
-            )
-            
-            # Calculate merged embedding
-            merged_embedding = self._compute_memory_embedding(merged_memory, observation)
-            
-            # Delete old memories
-            self._delete_memories(integrated_ids)
-            
-            # Add new memory
-            memory_id = self._add_memory(merged_memory, merged_embedding)
-            
-            self.stats["integration_count"] += 1
-            return memory_id
-        else:
-            # No integration, directly add
-            return self._add_memory(new_memory, new_embedding)
-    
+
     # ================================================================
     # Batch Integration (Strategy C)
     # ================================================================
@@ -942,38 +839,6 @@ class SEEMSkill:
                     validated_events.append(split_event)
         
         return validated_events
-    
-    def _judge_and_integrate(self, new_memory: EpisodicMemory, 
-                            candidates: List[EpisodicMemory],
-                            candidate_chunks: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
-        """LLM Judge & Integrate with complete observation context"""
-        # Build NEW MEMORY input with ALL its observations
-        new_observations = self._get_all_observations_for_memory(new_memory)
-        new_text = self._format_memory_for_judge(new_memory, new_observations)
-        
-        # Build CANDIDATE inputs with ALL their observations
-        candidate_texts = []
-        for i, mem in enumerate(candidates):
-            mem_observations = self._get_all_observations_for_memory(mem)
-            candidate_texts.append(self._format_memory_for_judge(mem, mem_observations))
-        
-        # Build user prompt
-        user_prompt = "NEW MEMORY:\n" + new_text + "\n\n"
-        for mem, cand_text in zip(candidates, candidate_texts):
-            user_prompt += f"CANDIDATE [memory_id={mem.memory_id}]:\n" + cand_text + "\n\n"
-        
-        # LLM call
-        try:
-            result = self.llm.generate(
-                system_prompt=JUDGE_INTEGRATE_SYSTEM_PROMPT,
-                user_prompt=user_prompt
-            )
-            self.stats["llm_calls"] += 1
-            
-            return json.loads(result)
-        except Exception as e:
-            print(f"Warning: Judge & Integrate failed: {str(e)}")
-            return None
     
     def _get_all_observations_for_memory(self, memory: EpisodicMemory) -> List[Dict[str, Any]]:
         """Get all observations associated with a memory"""

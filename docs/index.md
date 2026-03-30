@@ -27,6 +27,42 @@ title: SEEM — Structured Episodic Event Memory
 
 ---
 
+## Memory Representation Showcase
+
+SEEM produces three complementary memory views from raw dialogue turns, each serving a distinct retrieval and reasoning purpose.
+
+### Memory Summary
+
+Each memory entry is anchored by a concise **summary** together with **provenance metadata**: speaker, timestamp range, entity list, and source utterance links. This provides a high-level snapshot of what happened, who was involved, and where the information came from.
+
+<p align="center">
+  <img src="figs/Memory_Summary.png" width="85%" alt="Memory Summary Example">
+  <br>
+  <em>Memory summary with provenance tracking — speaker, time range, linked entities, and source utterances.</em>
+</p>
+
+### Episodic Event Frames
+
+SEEM decomposes each memory into structured **events** with six dedicated slots: *participants*, *action*, *time*, *location*, *reason*, and *method*. Each slot is strictly separated — actions contain only the core event, while temporal, spatial, and causal information occupy their own slots. This enables precise cross-event querying and reasoning.
+
+<p align="center">
+  <img src="figs/Memory_Event.png" width="85%" alt="Episodic Event Frame Example">
+  <br>
+  <em>Structured event with six episodic slots — participants, action, time, location, reason, and method each occupy a dedicated slot.</em>
+</p>
+
+### Semantic Fact Graph
+
+From extracted events, SEEM builds a **knowledge graph** of relational triples — each connecting a subject entity to an object through a predicate. Entities are linked across memories, forming a connected graph that supports multi-hop traversal and graph-aware retrieval. This layer captures relational knowledge that complements the narrative structure of episodic memory.
+
+<p align="center">
+  <img src="figs/Semantic_Facts.png" width="85%" alt="Semantic Fact Graph Example">
+  <br>
+  <em>Knowledge graph of relational facts — subject-predicate-object triples with cross-memory entity linking.</em>
+</p>
+
+---
+
 ## Paper Highlights
 
 Conventional LLM memory systems predominantly rely on static retrieval. SEEM introduces a structured alternative:
