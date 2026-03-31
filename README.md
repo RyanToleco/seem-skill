@@ -14,7 +14,7 @@
   <em>Overview of the associative consolidation and fusion.</em>
 </p>
 
-[arXiv:2601.06411](https://arxiv.org/abs/2601.06411) | MIT License
+[arXiv:2601.06411](https://arxiv.org/abs/2601.06411) | [OpenClaw Skill](https://clawhub.ai/ryantoleco/seem-skill) | MIT License
 
 ## Key Advantages
 

@@ -22,6 +22,7 @@ title: SEEM — Structured Episodic Event Memory
 <p align="center">
   <a href="https://arxiv.org/abs/2601.06411"><img src="https://img.shields.io/badge/arXiv-2601.06411-b31b1b?style=flat&labelColor=555" alt="arXiv"></a>
   <a href="https://github.com"><img src="https://img.shields.io/badge/github-SEEM-181717?style=flat&labelColor=555&logo=github&logoColor=white" alt="GitHub"></a>
+  <a href="https://clawhub.ai/ryantoleco/seem-skill"><img src="https://img.shields.io/badge/OpenClaw-skill-6366f1?style=flat&labelColor=555" alt="OpenClaw Skill"></a>
   <a href="#"><img src="https://img.shields.io/badge/license-MIT-2EA44F?style=flat&labelColor=555" alt="License"></a>
 </p>
 
@@ -163,7 +164,9 @@ cli_memory.py clear --yes
 
 ## OpenClaw Skill
 
-SEEM is packaged as an [OpenClaw](https://docs.openclaw.ai) agent skill. To install:
+SEEM is packaged as an [OpenClaw](https://docs.openclaw.ai) agent skill. Available on [ClawHub](https://clawhub.ai/ryantoleco/seem-skill).
+
+To install:
 
 1. Copy the `SEEM/` directory into your workspace's `skills/` folder.
 2. Set the required environment variables (`LLM_API_KEY`, `MM_ENCODER_API_KEY`) in your OpenClaw config or shell profile.

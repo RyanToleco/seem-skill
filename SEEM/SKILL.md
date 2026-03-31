@@ -104,7 +104,7 @@ config = SEEMConfig(
 
 | Parameter | Default | Description |
 |-----------|---------|-------------|
-| `retrieve_strategy` | `hybrid_rrf` | DPR / Hybrid RRF / PPR |
+| `retrieve_strategy` | `ppr` | DPR / Hybrid RRF / PPR |
 | `top_k_chunks` | 3 | Number of chunks to retrieve |
 | `top_k_facts` | 5 | Number of fact triples to retrieve |
 | `top_k_candidates` | 3 | Integration candidate count |
